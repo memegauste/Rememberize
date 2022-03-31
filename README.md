@@ -1,6 +1,6 @@
 # Rememberize
 Rememberize is JS package that remember forms using built-in mechanism in every browser called cookies.
-Has also built-in support for django forms (blacklisting mechanism for wizards).
+Has also support for django forms (blacklisting mechanism for wizards).
 
 Dependencies:
 * jQuery (tested on 3.6.0 version)
