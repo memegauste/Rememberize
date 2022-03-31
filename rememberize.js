@@ -10,6 +10,40 @@ const DJANGO_BLACKLIST = [
     'current_step',
 ]
 
+const miniCookieLib = {
+    setCookie: (name, value, days) => {
+        let expires = "";
+        if(days){
+            let date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = `; expires=${date.toUTCString()}`;
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    },
+    getCookie: (name) => {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for(let i=0;i < ca.length;i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1,c.length);
+            if (!c.indexOf(nameEQ)) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    },
+    getAllCookies: () => {
+      let pairs = document.cookie.split(";");
+      let cookies = {};
+      pairs.forEach((element) => {
+        let item = element.split('=');
+        cookies[(`${item[0]}`).trim()] = unescape(item.slice(1).join('='));
+      });
+      return cookies;
+    },
+    removeCookie: (name) => {
+        document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+    }
+};
+
 let rememberize = {
     DEFAULT_EXPIRE_DAYS: 3,
     isCKeditor: (field) => {
