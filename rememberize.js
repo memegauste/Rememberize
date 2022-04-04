@@ -152,9 +152,12 @@ const rememberize = {
             if (key.startsWith('rememberize-')) {
                 this.loadToForm(key.replace('rememberize-', ''), allCookies[key])
             } else if (key.startsWith('rememberize[textarea]-')) {
-                let selector = $(`#${key.replace('rememberize[textarea]-', '')}`);
-                if (self.isCKeditor(selector)) CKEDITOR.instances[selector.attr('id')].setData(allCookies[key]);
-                else selector.value = allCookies[key];
+                let elem = document.getElementById(
+                `${key.replace('rememberize[textarea]-', '')}`);
+                if(elem){
+                    if (self.isCKeditor(elem)) CKEDITOR.instances[elem.id].setData(allCookies[key]);
+                    else elem.value = allCookies[key];
+                }
             }
         })
     },
