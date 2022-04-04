@@ -141,7 +141,7 @@ const rememberize = {
             if (field && field.tagName === 'checkbox') {
                 field.filter(function () {
                     return this.value === value
-                }).prop('checked', true);
+                }).forEach((entry) => {entry.checked = true});
             } else if(field) field.value = value;
         });
     },
