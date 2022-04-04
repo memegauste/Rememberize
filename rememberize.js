@@ -1,5 +1,4 @@
 // RememberizeJS 0.2 - don't forget formdata on reload.
-// Requires cookiejs and jquery for now.
 
 const DJANGO_BLACKLIST = [
     'csrfmiddlewaretoken',
