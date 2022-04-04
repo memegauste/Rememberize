@@ -119,7 +119,7 @@ const rememberize = {
         });
         form.querySelectorAll('textarea').forEach((elem) => {
             if (self.isCKeditor(elem)) {
-                CKEDITOR.instances[elem.id].addEventListener('change', () => {
+                CKEDITOR.instances[elem.id].on('change', () => {
                     self.saveTextareas(form);
                 }, false);
             } else elem.addEventListener('change', () => {
