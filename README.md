@@ -16,6 +16,6 @@ Installation guide:
 ```
 
 TODO:
-* Rewrite the package to be more performant using speedy VanillaJS.
-* Not use jQuery and js-cookie anymore, to make it more lightweight.
 * Compress cookie-data, since it's limited to 4096 characters (bytes).
+* ~~Rewrite the package to be more performant using speedy VanillaJS.~~
+* ~~Not use jQuery and js-cookie anymore, to make it more lightweight.~~

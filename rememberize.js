@@ -52,11 +52,10 @@ const rememberize = {
         return !!checkCKeditor.length;
     },
     cleanFields: function (form) {
-        let inputs = form.find('input, select');
-        return inputs.filter(function () {
-            let curr = this;
+        let inputs = form.querySelectorAll('input, select');
+        return Array.from(inputs).filter((item) => {
             let result = true;
-            let name = curr.getAttribute('name');
+            let name = item.getAttribute('name');
             DJANGO_BLACKLIST.forEach((entry) => {
                 if (name && name.endsWith(entry)) result = false;
             });
@@ -76,17 +75,43 @@ const rememberize = {
             );
         });
     },
+    serialize: function(nodeList) {
+        let rcheckableType = ( /^(?:checkbox|radio)$/i );
+        let rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i;
+        let rsubmittable = /^(?:input|select|textarea|keygen)/i;
+        let rCRLF = /\r?\n/g;
+        let cleanedData = new FormData();
+		Array.from(nodeList).filter((elem) => {
+            let type = elem.type;
+
+            return elem.name && !elem.disabled &&
+                rsubmittable.test(elem.nodeName) && !rsubmitterTypes.test(type) &&
+                (elem.checked || !rcheckableType.test(type));
+        }).forEach((elem) => {
+            let val = elem.value;
+
+			if(Array.isArray(val)){
+				return val.map((item) => {
+					return {name: item.getAttribute('name'), value: item.value.replace(rCRLF, "\r\n")};
+				});
+			}
+
+            if(val) {
+                cleanedData.append(elem.getAttribute('name'), val.replace(rCRLF, "\r\n"));
+            }
+        });
+        return new URLSearchParams(cleanedData).toString();
+	},
     saveToCookie: function (form) {
         miniCookieLib.setCookie(
-            `rememberize-${form.attr('id')}`,
-            this.cleanFields(form).serialize(),
+            `rememberize-${form.id}`,
+            this.serialize(this.cleanFields(form)),
             this.DEFAULT_EXPIRE_DAYS,
         );
         this.saveTextareas(form);
     },
     initEvent: function (form) {
         const self = this;
-        console.log(form)
         form.querySelectorAll('input, select').forEach((elem) => {
             elem.addEventListener('change', () => {
                 self.saveToCookie(form);
@@ -109,7 +134,7 @@ const rememberize = {
         });
     },
     loadToForm: function (id, serializedData) {
-        $.each(serializedData.split('&'), (index, elem) => {
+        serializedData.split('&').forEach((elem) => {
             let vals = elem.split('=');
             let field = document.querySelectorAll(`#${id} [name='${vals[0]}']`)[0];
             let value = decodeURIComponent(vals[1].replace(/\+/g, ' '));
